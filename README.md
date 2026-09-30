@@ -87,7 +87,6 @@ Edit `appsettings.json`:
 }
 ```
 
-> ⚠️ `appsettings.json` is gitignored on purpose — never commit real database credentials. Only `appsettings.Example.json` (with placeholder values) is tracked in this repo.
 
 Then run:
 ```bash
@@ -105,7 +104,6 @@ npm run dev
 ```
 The app will be available at `http://localhost:5173`.
 
-> **Note:** Make sure the API's CORS policy in `Program.cs` allows the frontend's origin (`http://localhost:5173` by default), and that `src/api/axios.js` in the frontend points to the correct backend URL/port.
 
 ## API Endpoints
 
@@ -121,23 +119,7 @@ The app will be available at `http://localhost:5173`.
 | POST   | `/api/borrow`                | Borrow a book                   |
 | POST   | `/api/borrow/{id}/return`   | Return a borrowed book          |
 
-## Architecture Notes
 
-- **Layered design:** Controllers handle HTTP concerns only; Services hold business rules (like "can't borrow if no copies available"); Repositories are the only layer that talks to MongoDB. This keeps the codebase testable and makes it easy to swap out the database layer if needed.
-- **Document modeling:** `BorrowRecord.ReturnedAt` being `null` represents an active (not-yet-returned) loan, rather than a separate status field.
-- **Known limitation:** The borrow flow currently performs two separate writes (decrementing `AvailableCopies` and inserting a `BorrowRecord`), which isn't atomic. A production version would use MongoDB's `FindOneAndUpdate` with a conditional filter (`AvailableCopies > 0`) to prevent a race condition on the last available copy.
-
-## Roadmap / Possible Improvements
-- [ ] Atomic borrow operation to eliminate race condition
-- [ ] Proper DTO usage across all endpoints (currently models are exposed directly on some routes)
-- [ ] Authentication (JWT) and role-based access control (Admin / Librarian / Member)
-- [ ] Frontend migration to TypeScript (TSX)
-- [ ] Pagination and search/filter on the book catalog
-- [ ] Due dates and overdue tracking
-- [ ] Unit tests for services and repositories
-
-## Security Note
-This repo previously had a real MongoDB connection string accidentally committed and has since been rebuilt with clean history. Config secrets are now gitignored by default — see `appsettings.Example.json` for the required structure.
 
 ## License
 This project was built for learning purposes.
