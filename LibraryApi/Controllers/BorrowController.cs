@@ -1,16 +1,31 @@
-﻿using LibraryApi.Services;
+﻿using LibraryApi.Models;
+using LibraryApi.Repositories;
+using LibraryApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class BorrowController : ControllerBase
 {
     private readonly IBorrowService _service;
-    public BorrowController(IBorrowService service) => _service = service;
+    private readonly IBorrowRecordRepository _repo;
+
+    public BorrowController(IBorrowService service, IBorrowRecordRepository repo)
+    {
+        _service = service;
+        _repo = repo;
+    }
 
     public record BorrowRequest(string BookId, string MemberId);
+
+    [Authorize(Roles = "Admin,Librarian")]
+    [HttpGet]
+    public async Task<ActionResult<List<BorrowRecord>>> GetAll() =>
+        Ok(await _repo.GetAllAsync());
 
     [HttpPost]
     public async Task<IActionResult> Borrow(BorrowRequest request)

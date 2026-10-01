@@ -1,13 +1,17 @@
 import { useState } from "react";
 import api from "../api/axios";
 
-export default function AddBookForm({ onAdded }) {
+interface AddBookFormProps {
+  onAdded: () => void;
+}
+
+export default function AddBookForm({ onAdded }: AddBookFormProps) {
   const [form, setForm] = useState({ title: "", author: "", isbn: "", totalCopies: 1 });
 
-  const handleChange = (e) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await api.post("/books", {
       title: form.title,

@@ -1,0 +1,3 @@
+namespace LibraryApi.DTOs;
+
+public record AuthResponseDto(string Token, string Name, string Email, string Role);

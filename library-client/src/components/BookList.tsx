@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import type { Book } from "../types";
 
 export default function BookList() {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/books")
+    api.get<Book[]>("/books")
       .then((res) => setBooks(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

@@ -135,3 +135,23 @@ tbody tr:last-child td {
   color: #888;
   padding: 1.5rem 0;
 }
+
+.navbar {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #555;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+}
+
+.navbar a.active {
+  background: #4a7dfc;
+  color: #fff;
+}

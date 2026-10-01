@@ -1,5 +1,6 @@
 ﻿using LibraryApi.Models;
 using LibraryApi.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryApi.Controllers;
@@ -12,10 +13,12 @@ public class BooksController : ControllerBase
 
     public BooksController(IBookRepository repo) => _repo = repo;
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<Book>>> GetAll() =>
         Ok(await _repo.GetAllAsync());
 
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<Book>> GetById(string id)
     {
@@ -23,6 +26,7 @@ public class BooksController : ControllerBase
         return book is null ? NotFound() : Ok(book);
     }
 
+    [Authorize(Roles = "Admin,Librarian")]
     [HttpPost]
     public async Task<ActionResult> Create(Book book)
     {
@@ -31,6 +35,7 @@ public class BooksController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = book.Id }, book);
     }
 
+    [Authorize(Roles = "Admin,Librarian")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, Book book)
     {
@@ -41,6 +46,7 @@ public class BooksController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
